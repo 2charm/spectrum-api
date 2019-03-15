@@ -17,7 +17,6 @@ const accessControlAllowOrigin = "*"
 const accessControlAllowMethods = "GET"
 const accessControlAllowHeaders = "Content-Type, Authorization"
 const accessControlExposeHeaders = "Authorization"
-const accessControlMaxAge = "600"
 
 type ResponseHeader struct {
 	handler http.Handler
@@ -32,6 +31,5 @@ func (rh *ResponseHeader) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Methods", accessControlAllowMethods)
 	w.Header().Add("Access-Control-Allow-Headers", accessControlAllowHeaders)
 	w.Header().Add("Access-Control-Expose-Headers", accessControlExposeHeaders)
-	w.Header().Add("Access-Control-Max-Age", accessControlMaxAge)
 	rh.handler.ServeHTTP(w, r)
 }
