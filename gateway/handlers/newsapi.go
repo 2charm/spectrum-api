@@ -13,7 +13,7 @@ import (
 )
 
 const baseURL = "https://newsapi.org/v2/"
-const topHeadlinesURL = baseURL + "top-headlines?apiKey=%s&language=en&pageSize=5&sources=google-news"
+const topHeadlinesURL = baseURL + "top-headlines?apiKey=%s&language=en&pageSize=10&sources=google-news"
 const everythingURL = baseURL + "everything?apiKey=%s&language=en&pageSize=5&q=%s"
 
 //NewsHandler handles requests for the top headlines
@@ -25,20 +25,26 @@ func (ctx *HandlerContext) NewsHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		response := map[string]interface{}{}
-		for i := 0; i < 5; i++ {
+		max := 5
+		for i := 0; i < max; i++ {
 			title := topHeadlines.Articles[i].Title
 			keywords, err := getKeywords(title)
-			log.Printf("Keywords: %s\n", keywords)
+
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
 			}
-			articles, err := getRelatedArticles(keywords, ctx.Key)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
+			if keywords != "" {
+				log.Printf("Keywords: %s\n", keywords)
+				articles, err := getRelatedArticles(keywords, ctx.Key)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				response[keywords] = articles
+			} else {
+				max++
 			}
-			response[keywords] = articles
 		}
 		buffer, err := json.Marshal(response)
 		if err != nil {
