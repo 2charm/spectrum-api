@@ -25,11 +25,14 @@ func getEnvironmentVariable(key string) string {
 func main() {
 	addr := getEnvironmentVariable("ADDR")
 	key := getEnvironmentVariable("KEY")
+	tlscert := getEnvironmentVariable("TLSCERT")
+	tlskey := getEnvironmentVariable("TLSKEY")
+
 	ctx := handlers.HandlerContext{key}
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/v1/news", ctx.NewsHandler)
 	wrappedMux := handlers.NewResponseHeader(mux)
 	log.Printf("server is listening at %s...", addr)
-	log.Fatal(http.ListenAndServe(addr, wrappedMux))
+	log.Fatal(http.ListenAndServeTLS(addr, tlscert, tlskey, wrappedMux))
 }

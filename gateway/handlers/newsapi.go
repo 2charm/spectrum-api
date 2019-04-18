@@ -14,7 +14,7 @@ import (
 
 const baseURL = "https://newsapi.org/v2/"
 const topHeadlinesURL = baseURL + "top-headlines?apiKey=%s&language=en&pageSize=10&sources=google-news"
-const everythingURL = baseURL + "everything?apiKey=%s&language=en&pageSize=5&q=%s"
+const everythingURL = baseURL + "everything?apiKey=%s&language=en&sortBy=popularity&pageSize=5&q=%s"
 
 //NewsHandler handles requests for the top headlines
 func (ctx *HandlerContext) NewsHandler(w http.ResponseWriter, r *http.Request) {
