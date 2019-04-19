@@ -15,9 +15,10 @@ with the following headers to all requests:
   Access-Control-Max-Age: 600
 */
 
+//const accessControlAllowOrigin = "https://spectrumnews.me, https://www.spectrumnews.me"
 const accessControlAllowOrigin = "*"
 const accessControlAllowMethods = "GET, PUT, POST, PATCH, DELETE"
-const accessControlAllowHeaders = "Content-Type, Authorization, Accept, Origin, Referer, User-Agent"
+const accessControlAllowHeaders = "Content-Type, Authorization, Accept, Origin"
 const accessControlExposeHeaders = "Authorization"
 
 type ResponseHeader struct {
