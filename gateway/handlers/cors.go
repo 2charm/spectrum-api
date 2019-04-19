@@ -1,6 +1,8 @@
 package handlers
 
-import "net/http"
+import (
+	"net/http"
+)
 
 /* TODO: implement a CORS middleware handler, as described
 in https://drstearns.github.io/tutorials/cors/ that responds
@@ -14,8 +16,8 @@ with the following headers to all requests:
 */
 
 const accessControlAllowOrigin = "*"
-const accessControlAllowMethods = "GET"
-const accessControlAllowHeaders = "Content-Type, Authorization"
+const accessControlAllowMethods = "GET, PUT, POST, PATCH, DELETE"
+const accessControlAllowHeaders = "Content-Type, Authorization, Accept, Origin, Referer, User-Agent"
 const accessControlExposeHeaders = "Authorization"
 
 type ResponseHeader struct {
@@ -31,5 +33,10 @@ func (rh *ResponseHeader) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Methods", accessControlAllowMethods)
 	w.Header().Add("Access-Control-Allow-Headers", accessControlAllowHeaders)
 	w.Header().Add("Access-Control-Expose-Headers", accessControlExposeHeaders)
+
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
 	rh.handler.ServeHTTP(w, r)
 }

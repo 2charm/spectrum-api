@@ -79,9 +79,7 @@ func getTopHeadlines(key string) (*models.Headlines, error) {
 
 func getRelatedArticles(keywords string, key string) ([]models.Article, error) {
 	reqURL := fmt.Sprintf(everythingURL, key, keywords)
-	log.Print(reqURL)
 	resp, err := http.Get(reqURL)
-	log.Printf("%+v", resp)
 	if err != nil {
 		return nil, fmt.Errorf("Error calling NewsAPI everything: %v", err)
 	}
