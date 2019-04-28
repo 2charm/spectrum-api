@@ -4,8 +4,7 @@ create table if not exists users (
     pass_hash varchar(256) not null,
     user_name varchar(256) not null unique,
     first_name varchar(64) not null,
-    last_name varchar(128) not null,
-    photo_url varchar(128) not null
+    last_name varchar(128) not null
 );
 
 create table if not exists sign_in (
