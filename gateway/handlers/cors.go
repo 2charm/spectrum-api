@@ -15,10 +15,9 @@ with the following headers to all requests:
   Access-Control-Max-Age: 600
 */
 
-//const accessControlAllowOrigin = "https://spectrumnews.me, https://www.spectrumnews.me"
 const accessControlAllowOrigin = "*"
 const accessControlAllowMethods = "GET, PUT, POST, PATCH, DELETE"
-const accessControlAllowHeaders = "Content-Type, Authorization, Accept, Origin"
+const accessControlAllowHeaders = "Content-Type, Authorization"
 const accessControlExposeHeaders = "Authorization"
 
 type ResponseHeader struct {
@@ -34,7 +33,6 @@ func (rh *ResponseHeader) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Access-Control-Allow-Methods", accessControlAllowMethods)
 	w.Header().Add("Access-Control-Allow-Headers", accessControlAllowHeaders)
 	w.Header().Add("Access-Control-Expose-Headers", accessControlExposeHeaders)
-
 	if r.Method == "OPTIONS" {
 		w.WriteHeader(http.StatusOK)
 		return
