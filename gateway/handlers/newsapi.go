@@ -15,37 +15,50 @@ import (
 const baseURL = "https://newsapi.org/v2/"
 const topHeadlinesURL = baseURL + "top-headlines?apiKey=%s&language=en&pageSize=10&sources=google-news"
 const everythingURL = baseURL + "everything?apiKey=%s&language=en&sortBy=popularity&pageSize=5&q=%s"
+const maxArticles = 10
+
+var categories = []string{"sports", "health", "business", "entertainment", "science", "tech", "us"}
 
 //NewsHandler handles requests for the top headlines
 func (ctx *HandlerContext) NewsHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
-		topHeadlines, err := getTopHeadlines(ctx.Key)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		response := map[string]interface{}{}
-		max := 5
-		for i := 0; i < max; i++ {
-			title := topHeadlines.Articles[i].Title
-			keywords, err := getKeywords(title)
+		// topHeadlines, err := getTopHeadlines(ctx.Key)
+		// if err != nil {
+		// 	http.Error(w, err.Error(), http.StatusInternalServerError)
+		// 	return
+		// }
+		//response := map[string]interface{}{}
+		// max := 5
+		// for i := 0; i < max; i++ {
+		//title := topHeadlines.Articles[i].Title
+		// keywords, err := getKeywords(title)
+		// if err != nil {
+		// 	http.Error(w, err.Error(), http.StatusInternalServerError)
+		// 	return
+		// }
+		// if keywords != "" {
+		// 	log.Printf("Keywords: %s\n", keywords)
+		// 	articles, err := getRelatedArticles(keywords, ctx.Key)
+		// 	if err != nil {
+		// 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		// 		return
+		// 	}
+		// 	response[keywords] = articles
+		// } else {
+		// 	max++
+		// }
 
+		// }
+		response := map[string]interface{}{}
+		for _, category := range categories {
+			articles, err := getArticlesByCategory(category, ctx.APIKey)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
 			}
-			if keywords != "" {
-				log.Printf("Keywords: %s\n", keywords)
-				articles, err := getRelatedArticles(keywords, ctx.Key)
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-				response[keywords] = articles
-			} else {
-				max++
-			}
+			response[category] = articles
 		}
+
 		buffer, err := json.Marshal(response)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -79,6 +92,26 @@ func getTopHeadlines(key string) (*models.Headlines, error) {
 
 func getRelatedArticles(keywords string, key string) ([]models.Article, error) {
 	reqURL := fmt.Sprintf(everythingURL, key, keywords)
+	resp, err := http.Get(reqURL)
+	if err != nil {
+		return nil, fmt.Errorf("Error calling NewsAPI everything: %v", err)
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("Error reading json from NewsAPI: %v", err)
+	}
+	headlines := &models.Headlines{}
+	err = json.Unmarshal(body, headlines)
+	if err != nil {
+		log.Print(string(body))
+		return nil, fmt.Errorf("Error unmarshalling bytes: %v", err)
+	}
+	return headlines.Articles, nil
+}
+
+func getArticlesByCategory(category string, key string) ([]models.Article, error) {
+	reqURL := fmt.Sprintf(baseURL+"top-headlines?apiKey=%s&language=en&pageSize=10&category=%s", key, category)
 	resp, err := http.Get(reqURL)
 	if err != nil {
 		return nil, fmt.Errorf("Error calling NewsAPI everything: %v", err)

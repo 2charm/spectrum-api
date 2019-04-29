@@ -59,6 +59,7 @@ func main() {
 	ms := users.NewMySQLStore(db)
 
 	ctx := handlers.HandlerContext{
+		APIKey:       apikey,
 		SigningKey:   sessionkey,
 		SessionStore: rs,
 		UserStore:    ms,
