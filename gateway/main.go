@@ -34,7 +34,6 @@ func main() {
 	tlskey := getEnvironmentVariable("TLSKEY")
 	sessionkey := getEnvironmentVariable("SESSIONKEY")
 	redisaddr := getEnvironmentVariable("REDISADDR")
-	routingkey := getEnvironmentVariable("ROUTINGKEY")
 	dsn := getEnvironmentVariable("DSN")
 
 	//Redis Server
