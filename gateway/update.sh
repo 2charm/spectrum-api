@@ -27,6 +27,10 @@ docker run -d --network service_network --name sql_server \
 -e MYSQL_DATABASE=mysql \
 2charm/sql
 
+#Ensure server is up and running before api is running
+sleep 20
+
+#Gateway
 docker pull 2charm/gateway
 docker run -d --network service_network --name gateway \
 -p 443:443 \
@@ -34,6 +38,7 @@ docker run -d --network service_network --name gateway \
 -e TLSCERT=$TLSCERT \
 -e TLSKEY=$TLSKEY \
 -e ADDR=$ADDR \
+-e REDISADDR=$REDISADDR \
 -e APIKEY=$APIKEY \
 -e SESSIONKEY=$SESSIONKEY \
 -e DSN=$DSN \
