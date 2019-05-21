@@ -28,14 +28,14 @@ func (ctx *HandlerContext) NewsHandler(w http.ResponseWriter, r *http.Request) {
 			}
 			response[category] = articles
 		}
-		articles, err := callNewsAPI("top-headlines", "language=en&pageSize=10&apiKey="+ctx.APIKey)
+		articles, err := callNewsAPI("top-headlines", "country=us&category=general&pageSize=10&apiKey="+ctx.APIKey)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 		response["headline"] = articles
 
-		articles, err = callNewsAPI("top-headlines", "country=us&pageSize=10&category=general&apiKey="+ctx.APIKey)
+		articles, err = getArticlesByCategory("general", ctx.APIKey)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -56,7 +56,7 @@ func (ctx *HandlerContext) NewsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func getArticlesByCategory(category string, key string) ([]models.Article, error) {
-	return callNewsAPI("top-headlines", "language=en&pageSize=10&category="+category+"&apiKey="+key)
+	return callNewsAPI("top-headlines", "country=us&pageSize=10&category="+category+"&apiKey="+key)
 }
 
 func getArticlesByKeyword(keyword string, key string) ([]models.Article, error) {
@@ -95,22 +95,22 @@ func getKeywords(title string) (string, error) {
 	return strings.Join(keywords, "%20"), nil
 }
 
-func getRelatedArticles(keywords string, key string) ([]models.Article, error) {
-	reqURL := fmt.Sprintf(everythingURL, key, keywords)
-	resp, err := http.Get(reqURL)
-	if err != nil {
-		return nil, fmt.Errorf("Error calling NewsAPI everything: %v", err)
-	}
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("Error reading json from NewsAPI: %v", err)
-	}
-	headlines := &models.Headlines{}
-	err = json.Unmarshal(body, headlines)
-	if err != nil {
-		log.Print(string(body))
-		return nil, fmt.Errorf("Error unmarshalling bytes: %v", err)
-	}
-	return headlines.Articles, nil
-}
+// func getRelatedArticles(keywords string, key string) ([]models.Article, error) {
+// 	reqURL := fmt.Sprintf(everythingURL, key, keywords)
+// 	resp, err := http.Get(reqURL)
+// 	if err != nil {
+// 		return nil, fmt.Errorf("Error calling NewsAPI everything: %v", err)
+// 	}
+// 	defer resp.Body.Close()
+// 	body, err := ioutil.ReadAll(resp.Body)
+// 	if err != nil {
+// 		return nil, fmt.Errorf("Error reading json from NewsAPI: %v", err)
+// 	}
+// 	headlines := &models.Headlines{}
+// 	err = json.Unmarshal(body, headlines)
+// 	if err != nil {
+// 		log.Print(string(body))
+// 		return nil, fmt.Errorf("Error unmarshalling bytes: %v", err)
+// 	}
+// 	return headlines.Articles, nil
+// }
