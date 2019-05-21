@@ -1,5 +1,5 @@
 create table if not exists users (
-    id int not null auto_increment primary key,
+    user_id int not null auto_increment primary key,
     email varchar(128) not null unique,
     pass_hash varchar(256) not null,
     user_name varchar(256) not null unique,
@@ -12,3 +12,14 @@ create table if not exists sign_in (
     attempt_time datetime not null,
     client_ip varchar(128) not null
 );
+
+create table if not exists categories (
+    category_id int not null auto_increment primary key,
+    category_name varchar(128) not null unique,
+);
+
+create table if not exists articles (
+    user_id int not null,
+    category_id int not null,
+    read_on datetime not null
+)

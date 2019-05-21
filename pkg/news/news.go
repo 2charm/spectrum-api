@@ -1,4 +1,4 @@
-package models
+package news
 
 type Headlines struct {
 	Status       string    `json:"status"`

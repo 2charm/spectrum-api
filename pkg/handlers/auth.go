@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/2charm/spectrum-api/gateway/models/sessions"
-	"github.com/2charm/spectrum-api/gateway/models/users"
+	"github.com/2charm/spectrum-api/pkg/sessions"
+	"github.com/2charm/spectrum-api/pkg/users"
 )
 
 //SessionState represents a session that is started by an authenticated user

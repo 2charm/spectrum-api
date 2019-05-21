@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/2charm/spectrum-api/gateway/models"
+	"github.com/2charm/spectrum-api/pkg/news"
 	prose "gopkg.in/jdkato/prose.v2"
 )
 
@@ -55,15 +55,15 @@ func (ctx *HandlerContext) NewsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func getArticlesByCategory(category string, key string) ([]models.Article, error) {
+func getArticlesByCategory(category string, key string) ([]news.Article, error) {
 	return callNewsAPI("top-headlines", "country=us&pageSize=10&category="+category+"&apiKey="+key)
 }
 
-func getArticlesByKeyword(keyword string, key string) ([]models.Article, error) {
+func getArticlesByKeyword(keyword string, key string) ([]news.Article, error) {
 	return callNewsAPI("everything", "language=en&q=seattle&sortBy=relevancy")
 }
 
-func callNewsAPI(endpoint string, query string) ([]models.Article, error) {
+func callNewsAPI(endpoint string, query string) ([]news.Article, error) {
 	resp, err := http.Get(baseURL + endpoint + "?" + query)
 	if err != nil {
 		return nil, fmt.Errorf("Error calling NewsAPI everything: %v", err)
@@ -73,7 +73,7 @@ func callNewsAPI(endpoint string, query string) ([]models.Article, error) {
 	if err != nil {
 		return nil, fmt.Errorf("Error reading json from NewsAPI: %v", err)
 	}
-	headlines := &models.Headlines{}
+	headlines := &news.Headlines{}
 	err = json.Unmarshal(body, headlines)
 	if err != nil {
 		log.Print(string(body))
