@@ -4,37 +4,24 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
-	"os"
 	"time"
 
-	"github.com/2charm/spectrum-api/gateway/handlers"
-	"github.com/2charm/spectrum-api/gateway/models/sessions"
-	"github.com/2charm/spectrum-api/gateway/models/users"
+	"github.com/2charm/spectrum-api/pkg/util"
+
+	"github.com/2charm/spectrum-api/pkg/handlers"
+	"github.com/2charm/spectrum-api/pkg/sessions"
+	"github.com/2charm/spectrum-api/pkg/users"
 	"github.com/go-redis/redis"
 )
 
-func failOnError(err error, msg string) {
-	if err != nil {
-		log.Fatalf("%s: %s", msg, err)
-	}
-}
-
-func getEnvironmentVariable(key string) string {
-	val, set := os.LookupEnv(key)
-	if !set {
-		log.Fatalf("%s environment variable is not set", key)
-	}
-	return val
-}
-
 func main() {
-	addr := getEnvironmentVariable("ADDR")
-	apikey := getEnvironmentVariable("APIKEY")
-	tlscert := getEnvironmentVariable("TLSCERT")
-	tlskey := getEnvironmentVariable("TLSKEY")
-	sessionkey := getEnvironmentVariable("SESSIONKEY")
-	redisaddr := getEnvironmentVariable("REDISADDR")
-	dsn := getEnvironmentVariable("DSN")
+	addr := util.GetEnvironmentVariable("ADDR")
+	apikey := util.GetEnvironmentVariable("APIKEY")
+	tlscert := util.GetEnvironmentVariable("TLSCERT")
+	tlskey := util.GetEnvironmentVariable("TLSKEY")
+	sessionkey := util.GetEnvironmentVariable("SESSIONKEY")
+	redisaddr := util.GetEnvironmentVariable("REDISADDR")
+	dsn := util.GetEnvironmentVariable("DSN")
 
 	//Redis Server
 	rdb := redis.NewClient(&redis.Options{
@@ -43,16 +30,16 @@ func main() {
 		DB:       0,
 	})
 	_, err := rdb.Ping().Result()
-	failOnError(err, "Error pinging redis database")
+	util.FailOnError(err, "Error pinging redis database")
 
 	rs := sessions.NewRedisStore(rdb, 150*time.Second)
 
 	//mySQL Server
 	db, err := sql.Open("mysql", dsn)
-	failOnError(err, "Error opening a new SQL database")
+	util.FailOnError(err, "Error opening a new SQL database")
 
 	err = db.Ping()
-	failOnError(err, "Error pinging database")
+	util.FailOnError(err, "Error pinging database")
 	log.Printf("Successfully connected to SQL database!\n")
 
 	ms := users.NewMySQLStore(db)
