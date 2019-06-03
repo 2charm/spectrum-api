@@ -21,3 +21,8 @@ type source struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`
 }
+
+type Metrics struct {
+	UserID                int64
+	CategoryToNumArticles map[string]int
+}
