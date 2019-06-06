@@ -1,6 +1,5 @@
 #!/bin/bash
-GOOS=linux go build ./...
-chmod +x gateway
-docker build -t 2charm/gateway .
-go clean
-docker build -t 2charm/sql ../db
+../build/build_gateway.sh
+../build/build_news.sh
+
+docker build -t 2charm/sql ../database
