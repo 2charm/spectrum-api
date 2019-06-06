@@ -36,6 +36,7 @@ values(7, 'headline');
 create table if not exists articles (
     user_id int not null,
     category_id int not null,
+    source_id int not null,
     read_on datetime not null
 );
 
