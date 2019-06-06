@@ -7,14 +7,15 @@ type Headlines struct {
 }
 
 type Article struct {
-	Source      source `json:"source"`
-	Author      string `json:"author"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	URL         string `json:"url"`
-	URLToImage  string `json:"urlToImage"`
-	PublishedAt string `json:"publishedAt"`
-	Content     string `json:"content"`
+	Source          source `json:"source"`
+	Author          string `json:"author"`
+	Title           string `json:"title"`
+	Description     string `json:"description"`
+	URL             string `json:"url"`
+	URLToImage      string `json:"urlToImage"`
+	PublishedAt     string `json:"publishedAt"`
+	Content         string `json:"content"`
+	SpectrumEnabled bool   `json:"spectrumEnabled"`
 }
 
 type source struct {
@@ -23,6 +24,12 @@ type source struct {
 }
 
 type Metrics struct {
-	UserID                int64
-	CategoryToNumArticles map[string]int
+	UserID                int64          `json:"userID"`
+	CategoryToNumArticles map[string]int `json:"categoryToNumArticles"`
+	SourceToNumArticles   map[string]int `json:"sourceToNumArticles"`
+}
+
+type NewMetric struct {
+	Category string `json:"category"`
+	Source   string `json:"source"`
 }

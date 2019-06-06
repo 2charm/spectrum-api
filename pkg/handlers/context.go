@@ -7,7 +7,6 @@ import (
 
 //HandlerContext represents a receiver for handlers to utilize and gain context
 type HandlerContext struct {
-	APIKey       string
 	SigningKey   string
 	SessionStore sessions.Store `json:"sessionStore,omitempty"`
 	UserStore    users.Store    `json:"userStore,omitempty"`
